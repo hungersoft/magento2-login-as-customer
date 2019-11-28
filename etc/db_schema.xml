@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table comment="Hungersoft login as customer - admin login table" engine="innodb" name="hs_login_as_customer_adminlogin" resource="default">
+        <column comment="Entity Id" identity="true" name="adminlogin_id" nullable="false" padding="6" unsigned="false" xsi:type="smallint"/>
+        <constraint referenceId="PRIMARY" xsi:type="primary">
+            <column name="adminlogin_id"/>
+        </constraint>
+        <column name="customer_id" nullable="false" unsigned="true" xsi:type="int" padding="10"/>
+        <column name="admin_user_id" nullable="false" unsigned="true" xsi:type="int" padding="10"/>
+        <column name="created_at" nullable="false" xsi:type="timestamp"/>
+        <constraint
+            xsi:type="foreign"
+            referenceId="FK_HS_LOGIN_AS_CUSTOMER_ADMINLOGIN_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID"
+            table="hs_login_as_customer_adminlogin"
+            column="customer_id"
+            referenceTable="customer_entity"
+            referenceColumn="entity_id"
+            onDelete="CASCADE"/>
+            
+        <constraint
+            xsi:type="foreign"
+            referenceId="FK_HS_LOGIN_AS_CUSTOMER_ADMINLOGIN_ADMIN_USER_ID_ADMIN_USER_USER_ID"
+            table="hs_login_as_customer_adminlogin"
+            column="admin_user_id"
+            referenceTable="admin_user"
+            referenceColumn="user_id"
+            onDelete="CASCADE"/>
+    </table>
+</schema>

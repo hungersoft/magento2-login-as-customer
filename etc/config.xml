@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <hs_login_as_customer>
+            <general>
+                <enabled/>
+                <disable_page_cache_for_admin>1</disable_page_cache_for_admin>
+                <disable_merge_guest_cart_for_admin_login>1</disable_merge_guest_cart_for_admin_login>
+                <admin_login_storeview_selection/>
+            </general>
+        </hs_login_as_customer>
+    </default>
+</config>

@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add
+            id="HS_LoginAsCustomer::login_as_customer"
+            title="Hungersoft Login as Customer"
+            module="HS_LoginAsCustomer"
+            parent="Magento_Customer::customer"
+            sortOrder="600"
+            resource="HS_LoginAsCustomer::login_as_customer"/>
+
+        <add
+            id="HS_LoginAsCustomer::login_as_customer_view"
+            title="Admin Login(s)"
+            module="HS_LoginAsCustomer"
+            sortOrder="610"
+            parent="HS_LoginAsCustomer::login_as_customer"
+            action="hs_login_as_customer/adminlogin/index"
+            resource="HS_LoginAsCustomer::login_as_customer_view"/>
+    </menu>
+</config>

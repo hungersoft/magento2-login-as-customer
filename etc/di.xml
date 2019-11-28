@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="HS\LoginAsCustomer\Api\AdminLoginRepositoryInterface" type="HS\LoginAsCustomer\Model\AdminLoginRepository"/>
+    <preference for="HS\LoginAsCustomer\Api\Data\AdminLoginInterface" type="HS\LoginAsCustomer\Model\Data\AdminLogin"/>
+    <preference for="HS\LoginAsCustomer\Api\Data\AdminLoginSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+    <virtualType name="HS\LoginAsCustomer\Model\ResourceModel\AdminLogin\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">hs_login_as_customer_adminlogin</argument>
+            <argument name="resourceModel" xsi:type="string">HS\LoginAsCustomer\Model\ResourceModel\AdminLogin\Collection</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="hs_login_as_customer_adminlogin_listing_data_source" xsi:type="string">HS\LoginAsCustomer\Model\ResourceModel\AdminLogin\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+</config>
