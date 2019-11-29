@@ -3,8 +3,11 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="HS_LoginAsCustomer::AdminLogin" sortOrder="10" title="Admin Login">
-                    <resource id="HS_LoginAsCustomer::hs_login_as_customer_view" sortOrder="40" title="View Admin Login"/>
+                <resource id="Magento_Customer::customer">
+                    <resource id="HS_LoginAsCustomer::AdminLogin" sortOrder="10" title="Admin Login">
+                        <resource id="HS_LoginAsCustomer::login_as_customer_button" sortOrder="30" title="Login as customer button"/>
+                        <resource id="HS_LoginAsCustomer::login_as_customer_log" sortOrder="40" title="View Admin Login"/>
+                    </resource>
                 </resource>
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
