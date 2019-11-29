@@ -26,7 +26,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     const CONFIG_ENABLED = 'hs_login_as_customer/general/enabled';
     const CONFIG_DISABLE_PAGE_CACHE_FOR_ADMIN = 'hs_login_as_customer/general/disable_page_cache_for_admin';
     const CONFIG_DISABLE_MERGE_GUEST_CART_FOR_ADMIN_LOGIN = 'hs_login_as_customer/general/disable_merge_guest_cart_for_admin_login';
-    const CONFIG_ENABLE_MANUAL_STOREVIEW_SELECTION = 'hs_login_as_customer/general/enable_manual_storeview_selection';
+    const CONFIG_ENABLED_MANUAL_STOREVIEW_SELECTION = 'hs_login_as_customer/general/enable_manual_storeview_selection';
 
     /**
      * Currently selected store ID if applicable.
