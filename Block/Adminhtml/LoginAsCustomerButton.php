@@ -121,7 +121,7 @@ class LoginAsCustomerButton extends Container
     private function _getLoginUrl()
     {
         return $this->_urlBuilder->getUrl(
-            'hs_login_as_customer/adminlogin/index',
+            'hs_login_as_customer/adminlogin/login',
             [
                 'customer_id' => $this->order->getCustomerId(),
             ]
