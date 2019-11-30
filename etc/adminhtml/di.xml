@@ -3,4 +3,7 @@
 	<type name="Magento\Sales\Ui\Component\Listing\Column\ViewAction">
 		<plugin name="HS_LoginAsCustomer::Magento\Sales\Ui\Component\Listing\Column\ViewAction" sortOrder="10" type="HS\LoginAsCustomer\Plugin\Backend\Magento\Sales\Ui\Component\Listing\Column\ViewAction"/>
 	</type>
+    <type name="Magento\Customer\Ui\Component\Listing\Column\Actions">
+		<plugin name="HS_LoginAsCustomer::Magento\Customer\Ui\Component\Listing\Column\Actions" sortOrder="10" type="HS\LoginAsCustomer\Plugin\Backend\Magento\Customer\Ui\Component\Listing\Column\Actions"/>
+	</type>
 </config>
