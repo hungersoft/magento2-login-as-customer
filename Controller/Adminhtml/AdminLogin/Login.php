@@ -23,7 +23,6 @@ use HS\LoginAsCustomer\Helper\Data as LoginAsCustomerHelper;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Store\Model\App\Emulation;
 use Magento\Framework\Url;
 
 class Login extends Action
@@ -49,14 +48,16 @@ class Login extends Action
     private $storeManager;
 
     /**
-     * @var Emulation
-     */
-    private $emulation;
-
-    /**
      * @var Url
      */
     private $url;
+
+    /**
+     * Token Model.
+     *
+     * @var TokenModelFactory
+     */
+    private $tokenModelFactory;
 
     /**
      * @param Context               $context
@@ -64,7 +65,7 @@ class Login extends Action
      * @param CustomerSession       $customerSession
      * @param CustomerFactory       $customerFactory
      * @param StoreManagerInterface $storeManager
-     * @param Emulation             $emulation
+     * @param TokenModelFactory     $tokenModelFactory
      * @param Url                   $url
      */
     public function __construct(
@@ -73,15 +74,15 @@ class Login extends Action
         CustomerSession $customerSession,
         CustomerFactory $customerFactory,
         StoreManagerInterface $storeManager,
-        Emulation $emulation,
+        TokenModelFactory $tokenModelFactory,
         Url $url
     ) {
         $this->helper = $helper;
         $this->customerSession = $customerSession;
         $this->customerFactory = $customerFactory;
         $this->storeManager = $storeManager;
-        $this->emulation = $emulation;
         $this->url = $url;
+        $this->tokenModelFactory = $tokenModelFactory;
 
         parent::__construct($context);
     }
@@ -129,8 +130,8 @@ class Login extends Action
             $store = $this->storeManager->getDefaultStoreView();
         }
 
-        $this->customerSession->setCustomerDataAsLoggedIn($customer->getDataModel());
+        $this->customerSession->setAdminLoginCustomerId($customer->getId());
 
-        return $resultRedirect->setUrl($this->url->setScope($store)->getUrl('customer/account'));
+        return $resultRedirect->setUrl($this->url->setScope($store)->getUrl('hs_login_as_customer/login'));
     }
 }
