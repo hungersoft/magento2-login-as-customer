@@ -53,19 +53,11 @@ class Login extends Action
     private $url;
 
     /**
-     * Token Model.
-     *
-     * @var TokenModelFactory
-     */
-    private $tokenModelFactory;
-
-    /**
      * @param Context               $context
      * @param LoginAsCustomerHelper $helper
      * @param CustomerSession       $customerSession
      * @param CustomerFactory       $customerFactory
      * @param StoreManagerInterface $storeManager
-     * @param TokenModelFactory     $tokenModelFactory
      * @param Url                   $url
      */
     public function __construct(
@@ -74,7 +66,6 @@ class Login extends Action
         CustomerSession $customerSession,
         CustomerFactory $customerFactory,
         StoreManagerInterface $storeManager,
-        TokenModelFactory $tokenModelFactory,
         Url $url
     ) {
         $this->helper = $helper;
@@ -82,7 +73,6 @@ class Login extends Action
         $this->customerFactory = $customerFactory;
         $this->storeManager = $storeManager;
         $this->url = $url;
-        $this->tokenModelFactory = $tokenModelFactory;
 
         parent::__construct($context);
     }
