@@ -21,6 +21,8 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Checkout\Model\Session as CheckoutSession;
+use HS\LoginAsCustomer\Helper\Data as LoginAsCustomerHelper;
 
 class Index extends Action
 {
@@ -30,17 +32,38 @@ class Index extends Action
     private $customerSession;
 
     /**
-     * @param Context         $context
-     * @param CustomerSession $customerSession
-     * @param CustomerFactory $customerFactory
+     * @var CustomerFactory
+     */
+    private $customerFactory;
+
+    /**
+     * @var CheckoutSesion
+     */
+    private $checkoutSession;
+
+    /**
+     * @var LoginAsCustomerHelper
+     */
+    private $helper;
+
+    /**
+     * @param Context               $context
+     * @param CustomerSession       $customerSession
+     * @param CustomerFactory       $customerFactory
+     * @param CheckoutSession       $checkoutSession
+     * @param LoginAsCustomerHelper $helper
      */
     public function __construct(
         Context $context,
         CustomerSession $customerSession,
-        CustomerFactory $customerFactory
+        CustomerFactory $customerFactory,
+        CheckoutSession $checkoutSession,
+        LoginAsCustomerHelper $helper
     ) {
         $this->customerSession = $customerSession;
         $this->customerFactory = $customerFactory;
+        $this->checkoutSession = $checkoutSession;
+        $this->helper = $helper;
 
         parent::__construct($context);
     }
@@ -58,12 +81,15 @@ class Index extends Action
             return $resultRedirect->setPath('customer/account/login');
         }
 
-        $customer = $this->customerFactory->create()->load($customerId);
-        if (!$customer) {
-            return $resultRedirect->setPath('customer/account/login');
+        if ($this->customerSession->getId()) {
+            $this->customerSession->logout();
+        } else {
+            if ($this->helper->isDisabledMergeGuestCartForAdminLogin()) {
+                $this->checkoutSession->clearQuote();
+            }
         }
 
-        $this->customerSession->setCustomerDataAsLoggedIn($customer->getDataModel());
+        $this->customerSession->loginById($customerId);
 
         return $resultRedirect->setPath('customer/account');
     }
