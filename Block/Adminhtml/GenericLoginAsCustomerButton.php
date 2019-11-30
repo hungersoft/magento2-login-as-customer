@@ -20,25 +20,10 @@ namespace HS\LoginAsCustomer\Block\Adminhtml;
 use Magento\Backend\Block\Widget\Container;
 use Magento\Backend\Block\Widget\Context;
 use Magento\Framework\Registry;
-use Magento\Store\Model\App\Emulation;
 use Magento\Framework\AuthorizationInterface;
 
-class LoginAsCustomerButton extends Container
+abstract class GenericLoginAsCustomerButton extends Container
 {
-    /**
-     * Core registry.
-     *
-     * @var Registry
-     */
-    private $coreRegistry = null;
-
-    /**
-     * App Emulator.
-     *
-     * @var Emulation
-     */
-    private $emulation;
-
     /**
      * Authorization.
      *
@@ -47,11 +32,18 @@ class LoginAsCustomerButton extends Container
     private $authorization;
 
     /**
-     * Order.
+     * Core registry.
      *
-     * @var \Magento\Sales|Model|Order
+     * @var Registry
      */
-    private $order;
+    protected $coreRegistry = null;
+
+    /**
+     * Customer id.
+     *
+     * @var int
+     */
+    protected $customerId = null;
 
     /**
      * @param Context  $context
@@ -75,8 +67,7 @@ class LoginAsCustomerButton extends Container
      */
     protected function _construct()
     {
-        $this->order = $this->getOrder();
-        if ($this->order && $this->isAllowed() && $this->order->getCustomerId()) {
+        if ($this->isAllowed() && $this->getCustomerId()) {
             $this->addButton(
                 'login_as_customer_button',
                 $this->getButtonData()
@@ -87,43 +78,29 @@ class LoginAsCustomerButton extends Container
     }
 
     /**
-     * Get current order.
-     *
-     * @return \Mage\Sales\Model|Order
-     */
-    private function getOrder()
-    {
-        $object = $this->coreRegistry->registry($this->getRegistry());
-        if ($this->getRegistry() === 'current_order') {
-            return $object;
-        }
-
-        return $object->getOrder();
-    }
-
-    /**
      * Return button attributes array.
      */
     public function getButtonData()
     {
         return [
             'label' => __('Login As Customer'),
-            'on_click' => sprintf("window.open('%s')", $this->_getLoginUrl()),
+            'on_click' => sprintf("window.open('%s')", $this->getLoginUrl()),
             'class' => 'view',
             'sort_order' => 20,
         ];
     }
+
     /**
      * Return product frontend url depends on active store.
      *
      * @return mixed
      */
-    private function _getLoginUrl()
+    private function getLoginUrl()
     {
         return $this->_urlBuilder->getUrl(
             'hs_login_as_customer/adminlogin/login',
             [
-                'customer_id' => $this->order->getCustomerId(),
+                'customer_id' => $this->getCustomerId(),
             ]
         );
     }
@@ -137,4 +114,11 @@ class LoginAsCustomerButton extends Container
     {
         return $this->authorization->isAllowed('HS_LoginAsCustomer::login_as_customer_button');
     }
+
+    /**
+     * Get customer id.
+     *
+     * @var int
+     */
+    abstract protected function getCustomerId();
 }
