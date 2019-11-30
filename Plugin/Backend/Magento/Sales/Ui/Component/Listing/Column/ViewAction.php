@@ -41,7 +41,6 @@ class ViewAction
      * Add login as customer button to sales grid actions column.
      *
      * @param ActionColumn $subject
-     * @param array        $result
      * @param array        $dataSource
      *
      * @return array
