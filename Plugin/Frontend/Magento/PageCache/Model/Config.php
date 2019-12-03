@@ -55,8 +55,6 @@ class Config
      */
     public function afterIsEnabled(PageCacheConfig $subject, $result)
     {
-        return $result
-            && $this->customerSession->getAdminLoginCustomerId()
-            && !$this->helper->isDisabledPageCacheForAdmin();
+        return $result || ($this->customerSession->getIsAdminLogin() && !$this->helper->isDisabledPageCacheForAdmin());
     }
 }

@@ -97,6 +97,7 @@ class Index extends Action
 
         $this->customerSession->loginById($customerId);
         $this->customerSession->regenerateId();
+        $this->customerSession->setIsAdminLogin(true);
         $this->loginAsCustomerSession->setCustomerId(null);
 
         return $resultRedirect->setPath('customer/account');
