@@ -17,12 +17,13 @@
 
 namespace HS\LoginAsCustomer\Controller\Login;
 
+use Magento\Checkout\Model\Cart;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Customer\Model\Session as CustomerSession;
-use Magento\Checkout\Model\Session as CheckoutSession;
 use HS\LoginAsCustomer\Helper\Data as LoginAsCustomerHelper;
+use HS\LoginAsCustomer\Model\Session as LoginAsCustomerSession;
 
 class Index extends Action
 {
@@ -32,14 +33,19 @@ class Index extends Action
     private $customerSession;
 
     /**
+     * @var LoginAsCustomerSession
+     */
+    private $loginAsCustomerSession;
+
+    /**
      * @var CustomerFactory
      */
     private $customerFactory;
 
     /**
-     * @var CheckoutSesion
+     * @var Cart
      */
-    private $checkoutSession;
+    private $cart;
 
     /**
      * @var LoginAsCustomerHelper
@@ -47,23 +53,26 @@ class Index extends Action
     private $helper;
 
     /**
-     * @param Context               $context
-     * @param CustomerSession       $customerSession
-     * @param CustomerFactory       $customerFactory
-     * @param CheckoutSession       $checkoutSession
-     * @param LoginAsCustomerHelper $helper
+     * @param Context                $context
+     * @param Cart                   $cart
+     * @param LoginAsCustomerHelper  $helper
+     * @param CustomerSession        $customerSession
+     * @param CustomerFactory        $customerFactory
+     * @param LoginAsCustomerSession $loginAsCustomerSession
      */
     public function __construct(
         Context $context,
+        Cart $cart,
+        LoginAsCustomerHelper $helper,
         CustomerSession $customerSession,
         CustomerFactory $customerFactory,
-        CheckoutSession $checkoutSession,
-        LoginAsCustomerHelper $helper
+        LoginAsCustomerSession $loginAsCustomerSession
     ) {
+        $this->cart = $cart;
+        $this->helper = $helper;
         $this->customerSession = $customerSession;
         $this->customerFactory = $customerFactory;
-        $this->checkoutSession = $checkoutSession;
-        $this->helper = $helper;
+        $this->loginAsCustomerSession = $loginAsCustomerSession;
 
         parent::__construct($context);
     }
@@ -76,20 +85,19 @@ class Index extends Action
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        $customerId = $this->customerSession->getAdminLoginCustomerId();
+        $customerId = $this->loginAsCustomerSession->getCustomerId();
         if (!$customerId) {
             return $resultRedirect->setPath('customer/account/login');
         }
 
-        if ($this->customerSession->getId()) {
-            $this->customerSession->logout();
-        } else {
-            if ($this->helper->isDisabledMergeGuestCartForAdminLogin()) {
-                $this->checkoutSession->clearQuote();
-            }
-        }
+        $this->customerSession->logout();
+        // if ($this->helper->isDisabledMergeGuestCartForAdminLogin()) {
+        $this->cart->truncate()->saveQuote();
+        // }
 
         $this->customerSession->loginById($customerId);
+        $this->customerSession->regenerateId();
+        $this->loginAsCustomerSession->setCustomerId(null);
 
         return $resultRedirect->setPath('customer/account');
     }

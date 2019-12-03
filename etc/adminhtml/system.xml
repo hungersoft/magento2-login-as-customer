@@ -17,16 +17,16 @@
                     <comment>When admin logs in as customer, page cache is disabled</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="disable_merge_guest_cart_for_admin_login" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                <!-- <field id="disable_merge_guest_cart_for_admin_login" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
                     <label>Disable merge guest cart for admin login</label>
                     <comment>Disable merging the items added to cart as guest, when logging in as customer by the admin.</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="enable_manual_storeview_selection" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
+                </field> -->
+                <!-- <field id="enable_manual_storeview_selection" showInDefault="1" showInStore="1" showInWebsite="1" sortOrder="10" translate="label" type="select">
                     <label>Enable manual storeview selection for admin login</label>
                     <comment>When disabled storeview will be detected automatically. Helpful for multi-website installations</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
+                </field> -->
             </group>
         </section>
     </system>
