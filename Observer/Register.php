@@ -8,31 +8,31 @@
 
 namespace HS\LoginAsCustomer\Observer;
 
+use HS\All\Helper\Data;
+use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 
 class Register implements ObserverInterface
 {
     /**
-     * @var \HS\All\Helper\Data
+     * @var Data
      */
-    protected $helper;
+    private $helper;
 
     /**
-     * @param \HS\All\Helper\Data $helper
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @param Data $helper
      */
-    public function __construct(
-        \HS\All\Helper\Data $helper
-    ) {
+    public function __construct(Data $helper)
+    {
         $this->helper = $helper;
     }
 
     /**
      * Register extension.
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  Observer $observer
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         $this->helper->register('HS_LoginAsCustomer', '1.0.0', 'confirm');
     }
