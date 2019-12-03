@@ -48,19 +48,43 @@
 		<column name="customer_id">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">customer_id</label>
+				<label translate="true">Customer ID</label>
 			</settings>
 		</column>
+        <column name="customer_name" class="HS\LoginAsCustomer\Ui\Component\Listing\Column\CustomerData">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Customer Name</label>
+            </settings>
+        </column>
+        <column name="customer_email" class="HS\LoginAsCustomer\Ui\Component\Listing\Column\CustomerData">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Customer Email</label>
+            </settings>
+        </column>
 		<column name="admin_user_id">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">admin_user_id</label>
+				<label translate="true">Admin User ID</label>
 			</settings>
 		</column>
+        <column name="admin_user_name" class="HS\LoginAsCustomer\Ui\Component\Listing\Column\AdminUserData">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Admin User Name</label>
+            </settings>
+        </column>
+        <column name="admin_user_email" class="HS\LoginAsCustomer\Ui\Component\Listing\Column\AdminUserData">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Admin User Email</label>
+            </settings>
+        </column>
 		<column name="created_at">
 			<settings>
 				<filter>text</filter>
-				<label translate="true">created_at</label>
+				<label translate="true">Logged in at</label>
 			</settings>
 		</column>
 	</columns>
