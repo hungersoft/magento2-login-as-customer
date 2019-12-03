@@ -17,13 +17,17 @@
 
 namespace HS\LoginAsCustomer\Controller\Adminhtml\AdminLogin;
 
+use Magento\Framework\Url;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use HS\LoginAsCustomer\Helper\Data as LoginAsCustomerHelper;
-use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\Api\DataObjectHelper;
 use Magento\Customer\Model\CustomerFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\Url;
+use HS\LoginAsCustomer\Api\Data\AdminLoginInterface;
+use HS\LoginAsCustomer\Api\AdminLoginRepositoryInterface;
+use HS\LoginAsCustomer\Api\Data\AdminLoginInterfaceFactory;
+use HS\LoginAsCustomer\Helper\Data as LoginAsCustomerHelper;
+use HS\LoginAsCustomer\Model\Session as LoginAsCustomerSession;
 
 class Login extends Action
 {
@@ -33,9 +37,9 @@ class Login extends Action
     private $helper;
 
     /**
-     * @var CustomerSession
+     * @var LoginAsCustomerSession
      */
-    private $customerSession;
+    private $loginAsCustomerSession;
 
     /**
      * @var CustomerFactory
@@ -53,26 +57,50 @@ class Login extends Action
     private $url;
 
     /**
-     * @param Context               $context
-     * @param LoginAsCustomerHelper $helper
-     * @param CustomerSession       $customerSession
-     * @param CustomerFactory       $customerFactory
-     * @param StoreManagerInterface $storeManager
-     * @param Url                   $url
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * @var AdminLoginInterfaceFactory
+     */
+    private $adminloginDataFactory;
+
+    /**
+     * @var AdminLoginRepositoryInterface
+     */
+    private $adminLoginRepository;
+
+    /**
+     * @param Context                       $context
+     * @param LoginAsCustomerHelper         $helper
+     * @param LoginAsCustomerSession        $loginAsCustomerSession
+     * @param CustomerFactory               $customerFactory
+     * @param StoreManagerInterface         $storeManager
+     * @param Url                           $url
+     * @param AdminLoginInterfaceFactory    $adminloginDataFactory
+     * @param DataObjectHelper              $dataObjectHelper
+     * @param AdminLoginRepositoryInterface $adminLoginRepository
      */
     public function __construct(
         Context $context,
         LoginAsCustomerHelper $helper,
-        CustomerSession $customerSession,
+        LoginAsCustomerSession $loginAsCustomerSession,
         CustomerFactory $customerFactory,
         StoreManagerInterface $storeManager,
-        Url $url
+        Url $url,
+        AdminLoginInterfaceFactory $adminloginDataFactory,
+        DataObjectHelper $dataObjectHelper,
+        AdminLoginRepositoryInterface $adminLoginRepository
     ) {
-        $this->helper = $helper;
-        $this->customerSession = $customerSession;
-        $this->customerFactory = $customerFactory;
-        $this->storeManager = $storeManager;
         $this->url = $url;
+        $this->helper = $helper;
+        $this->storeManager = $storeManager;
+        $this->customerFactory = $customerFactory;
+        $this->loginAsCustomerSession = $loginAsCustomerSession;
+        $this->adminloginDataFactory = $adminloginDataFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->adminLoginRepository = $adminLoginRepository;
 
         parent::__construct($context);
     }
@@ -95,14 +123,14 @@ class Login extends Action
 
         $customerId = $this->getRequest()->getParam('customer_id');
         $storeId = $this->getRequest()->getParam('store_id');
-        if (!$storeId && $this->helper->isEnabledManualStoreviewSelection()) {
-            return $resultRedirect->setPath(
-                'hs_login_as_customer/adminlogin/storeview',
-                [
-                    'customer_id' => $customerId,
-                ]
-            );
-        }
+        // if (!$storeId && $this->helper->isEnabledManualStoreviewSelection()) {
+        //     return $resultRedirect->setPath(
+        //         'hs_login_as_customer/adminlogin/storeview',
+        //         [
+        //             'customer_id' => $customerId,
+        //         ]
+        //     );
+        // }
 
         $customer = $this->customerFactory->create()->load($customerId);
         if (!$customer->getId()) {
@@ -113,6 +141,38 @@ class Login extends Action
             return $resultRedirect->setUrl($this->_redirect->getRefererUrl());
         }
 
+        $this->loginAsCustomerSession->setCustomerId($customer->getId());
+
+        $adminloginData = [
+            'admin_user_id' => $this->_auth->getUser()->getId(),
+            'customer_id' => $customer->getId(),
+        ];
+
+        $adminloginDataObject = $this->adminloginDataFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $adminloginDataObject,
+            $adminloginData,
+            AdminLoginInterface::class
+        );
+
+        $this->adminLoginRepository->save($adminloginDataObject);
+
+        return $resultRedirect->setUrl(
+            $this->url->setScope($this->getStore($customer)
+        )->getUrl(
+            'hs_login_as_customer/login'
+        ));
+    }
+
+    /**
+     * Get store view to login to.
+     *
+     * @param Customer $customer
+     *
+     * @return int
+     */
+    private function getStore($customer)
+    {
         $storeId = $storeId ?? $customer->getStoreId();
         if ($storeId) {
             $store = $this->storeManager->getStore($storeId);
@@ -120,8 +180,6 @@ class Login extends Action
             $store = $this->storeManager->getDefaultStoreView();
         }
 
-        $this->customerSession->setAdminLoginCustomerId($customer->getId());
-
-        return $resultRedirect->setUrl($this->url->setScope($store)->getUrl('hs_login_as_customer/login'));
+        return $store;
     }
 }
