@@ -18,19 +18,45 @@
 namespace HS\LoginAsCustomer\Plugin\Frontend\Magento\PageCache\Model;
 
 use Magento\PageCache\Model\Config as PageCacheConfig;
+use HS\LoginAsCustomer\Helper\Data as LoginAsCustomerHelper;
+use Magento\Customer\Model\Session as CustomerSession;
 
 class Config
 {
+    /**
+     * @var LoginAsCustomerHelper
+     */
+    private $helper;
+
+    /**
+     * @var CustomerSession
+     */
+    private $customerSession;
+
+    /**
+     * Constructor.
+     *
+     * @param LoginAsCustomerHelper $helper
+     * @param CustomerSession       $customerSession
+     */
+    public function __construct(LoginAsCustomerHelper $helper, CustomerSession $customerSession)
+    {
+        $this->helper = $helper;
+        $this->customerSession = $customerSession;
+    }
+
     /**
      * Disable page cache when login as customer config set to disable.
      *
      * @param PageCacheConfig $subject
      * @param bool            $result
-     * 
+     *
      * @return bool
      */
     public function afterIsEnabled(PageCacheConfig $subject, $result)
     {
-        return $result;
+        return $result
+            && $this->customerSession->getAdminLoginCustomerId()
+            && !$this->helper->isDisabledPageCacheForAdmin();
     }
 }
