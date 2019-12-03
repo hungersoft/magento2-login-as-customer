@@ -16,4 +16,14 @@
             </argument>
         </arguments>
     </type>
+    <virtualType name="HS\LoginAsCustomer\Model\Session\Storage" type="Magento\Framework\Session\Storage">
+        <arguments>
+            <argument name="namespace" xsi:type="string">hs_login_as_customer</argument>
+        </arguments>
+    </virtualType>
+    <type name="HS\LoginAsCustomer\Model\Session">
+        <arguments>
+            <argument name="storage" xsi:type="object">HS\LoginAsCustomer\Model\Session\Storage</argument>
+        </arguments>
+    </type>
 </config>
